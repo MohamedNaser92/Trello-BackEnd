@@ -4,13 +4,18 @@ import { config } from 'dotenv';
 import userModel from '../DB/models/user.model.js';
 
 config();
+
+const callbackURL =
+	process.env.NODE_ENV === 'production'
+		? 'https://trello-application.onrender.com/auth/google/callback'
+		: 'http://localhost:3000/auth/google/callback';
+
 passport.use(
 	new GoogleStrategy(
 		{
 			clientID: process.env.CLIENT_ID,
 			clientSecret: process.env.CLIENT_SECRET,
-			callbackURL:
-				'https://trello-application.onrender.com/auth/google/callback',
+			callbackURL,
 		},
 		async (accessToken, refreshToken, profile, done) => {
 			try {
