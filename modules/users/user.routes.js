@@ -68,7 +68,7 @@ userRoutes.patch(
 
 userRoutes.delete('/user/deleteUser/:id', authUser, deleteUser);
 
-userRoutes.put('user/softDeleteUser/:id', authUser, softDeleteUser);
+userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
 
 userRoutes.get(

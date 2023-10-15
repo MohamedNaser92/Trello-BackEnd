@@ -5,20 +5,23 @@ const addTask = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const { assignTo } = req.body;
+
 		const founded = await userModel.findById({ _id: id });
-		const assigningTo = await userModel.findById(assignTo);
+		const assigningTo = await userModel.findById({ _id: assignTo });
+
 		if (!founded && founded.deleted == true && founded.isVerified == false)
 			return res
 				.status(400)
 				.json({ message: 'User Not Founded please signUp' });
+
 		if (founded.role != 'admin')
-			return res
-				.status(402)
-				.json({ message: 'You dont have a premession', err });
+			return res.status(402).json({ message: 'You dont have a premession' });
+
 		if (!assigningTo)
 			return res.status(400).json({
-				message: 'User you trying to addmit task to use is not found',
+				message: 'User you trying to addmit task to is exist',
 			});
+
 		if (assigningTo) {
 			const { title, description, assignTo, deadLine } = req.body;
 			let addTask = await taskModel.create({
@@ -60,7 +63,7 @@ const updateTask = async (req, res) => {
 					.status(201)
 					.json({ message: 'Task Updated Successfully', updatedTask });
 			} else {
-				return res.status(400).json({ message: 'Task not exist' });
+				return res.status(400).json({ message: 'Task does not exist' });
 			}
 		} else {
 			return res
@@ -84,9 +87,7 @@ const deleteTask = async (req, res) => {
 			founded.isVerified == true &&
 			founded.role == 'admin'
 		) {
-			console.log(founded);
 			const { id } = req.body;
-			console.log(id);
 			let deleted = await taskModel.findById({ _id: id });
 			if (deleted) {
 				let deletedTask = await taskModel.findByIdAndDelete({ _id: id });
@@ -122,7 +123,6 @@ const getAllTasksWithUserData = async (req, res) => {
 const getallTasksNotDoneAfterDeadline = async (req, res) => {
 	let user = req.user.id;
 	let role = req.user.role;
-	console.log(role);
 
 	try {
 		role !== 'admin' &&

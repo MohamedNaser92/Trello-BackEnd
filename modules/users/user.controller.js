@@ -179,17 +179,13 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-	let id = req.params.id;
+	let { id } = req.params;
 	try {
-		if (id !== idParams) {
-			res.json({ message: 'You are not authorized to update user' });
-		} else {
-			let deletedUser = await userModel.findByIdAndDelete(id);
-			!deletedUser && res.status(404).json({ message: 'User not found' });
-			res
-				.status(200)
-				.json({ message: 'User deleted successfully.', deletedUser });
-		}
+		let deletedUser = await userModel.findByIdAndDelete(id);
+		!deletedUser && res.status(404).json({ message: 'User not found' });
+		res
+			.status(200)
+			.json({ message: 'User deleted successfully.', deletedUser });
 	} catch (err) {
 		res
 			.status(500)
