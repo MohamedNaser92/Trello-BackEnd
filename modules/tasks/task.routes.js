@@ -10,10 +10,10 @@ import { auth } from '../../middleware/authentication.js';
 
 const taskRoutes = express.Router();
 
-taskRoutes.post('/addTask/:id', auth, addTask);
-taskRoutes.post('/updateTask/:id', auth, updateTask);
-taskRoutes.delete('/deleteTask/:id', auth, deleteTask);
-taskRoutes.get('/getAllTasksWithUsersData', auth, getAllTasksWithUserData);
-taskRoutes.get('/getaDelayedTasks', auth, getallTasksNotDoneAfterDeadline);
+taskRoutes.post('/task/addTask/:id', auth, addTask);
+taskRoutes.post('/task/updateTask/:id', auth, updateTask);
+taskRoutes.delete('/task/deleteTask/:id', auth, deleteTask);
+taskRoutes.get('/task/getAllTasksWithUsersData', auth, getAllTasksWithUserData);
+taskRoutes.get('/task/getaDelayedTasks', auth, getallTasksNotDoneAfterDeadline);
 
 export default taskRoutes;
