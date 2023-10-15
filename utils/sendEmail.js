@@ -11,7 +11,8 @@ export const sendToEmail = async (email, verificationSignUpToken) => {
 			pass: process.env.PASSWORD,
 		},
 	});
-	const confLink = `http://localhost:3000/user/verify/${verificationSignUpToken}`;
+	const confLink = `https://trello-application.onrender.com/user/verify/${verificationSignUpToken}`;
+	// const confLink = `http://localhost:3000/user/verify/${verificationSignUpToken}`;
 	const info = await transporter.sendMail({
 		from: '"Trello App 📒"  process.env.APP_EMAIL', // sender address
 		to: email, // list of receivers
@@ -20,14 +21,7 @@ export const sendToEmail = async (email, verificationSignUpToken) => {
 		text: 'Hello ', // plain text body
 		html: verificationMail(confLink),
 	});
-	// const info = await transporter.sendMail({
-	// 	from: '"Trello App 📒" <servertest273000@gmail.com>', // sender address
-	// 	to: email, // list of receivers
 
-	// 	subject: 'Hello ✔ 🙋🏻', // Subject line
-	// 	text: 'Hello ', // plain text body
-	// 	html: `<h1>Hello from trello application 📒 <br> <a href='http://localhost:3000/user/verify/${verificationSignUpToken}'>Please Verify Email </a></h1>`, // html body
-	// });
 	console.log('Message sent: %s', info.messageId);
 };
 
