@@ -3,13 +3,14 @@ import connection from './DB/connection.js';
 import userRoutes from './modules/users/user.routes.js';
 import taskRoutes from './modules/tasks/task.routes.js';
 import { config } from 'dotenv';
-import cros from 'cros';
+import cors from 'cors';
 config();
 const app = express();
 app.use(express.json());
 
 connection();
-app.use(cros({ origin: '*' }));
+app.use(cors({ origin: '*' }));
+
 app.use(userRoutes);
 app.use(taskRoutes);
 app.get('/', (req, res) => {
