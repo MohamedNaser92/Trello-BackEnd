@@ -10,7 +10,7 @@ const taskSchema = new Schema(
 		},
 		userId: { type: mongoose.Types.ObjectId, ref: 'User' },
 		assignTo: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-		deadline: Date,
+		deadline: { type: String, required: true },
 	},
 	{ timestamps: true }
 );

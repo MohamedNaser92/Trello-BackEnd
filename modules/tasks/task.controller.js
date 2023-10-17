@@ -7,7 +7,7 @@ const addTask = async (req, res) => {
 		const { assignTo } = req.body;
 
 		const founded = await userModel.findById({ _id: id });
-		const assigningTo = await userModel.findById({ _id: assignTo });
+		const assigningTo = await userModel.findOne({ email: assignTo });
 
 		if (!founded && founded.deleted == true && founded.isVerified == false)
 			return res
@@ -23,18 +23,18 @@ const addTask = async (req, res) => {
 			});
 
 		if (assigningTo) {
-			const { title, description, assignTo, deadLine } = req.body;
+			const { title, description, assignTo, deadline } = req.body;
 			let addTask = await taskModel.create({
 				title,
 				description,
 				userId: id,
-				assignTo,
-				deadLine,
+				assignTo: assigningTo._id,
+				deadline,
 				status: 'todo',
 			});
 			return res
 				.status(200)
-				.json({ message: `Task Added to ${assignTo.userName}`, addTask });
+				.json({ message: `Task Added to ${assigningTo.userName}`, addTask });
 		}
 	} catch (err) {
 		res.status(500).json({ message: 'Error occuring while Adding task', err });
@@ -43,32 +43,36 @@ const addTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const founded = await userModel.findById({ _id: id });
-		if (
-			founded &&
-			founded.deleted == false &&
-			founded.isVerified == true &&
-			founded.role == 'admin'
-		) {
-			const { id, title, description, status } = req.body;
-			let update = await taskModel.findById(id);
-			if (update) {
-				let updatedTask = await taskModel.findByIdAndUpdate(
-					{ _id: id },
-					{ title, description, status },
-					{ new: true }
-				);
-				return res
-					.status(201)
-					.json({ message: 'Task Updated Successfully', updatedTask });
-			} else {
-				return res.status(400).json({ message: 'Task does not exist' });
-			}
+		let user = req.user.id;
+		let role = req.user.role;
+
+		let taskID = req.params.id;
+
+		role !== 'admin' &&
+			res.status(403).json({ message: "You don't have permission " });
+		let taskAutherized = await taskModel.findOne({
+			_id: taskID,
+			userId: user,
+		});
+
+		if (taskAutherized) {
+			let updatedTask = await taskModel.findByIdAndUpdate(
+				taskID,
+				{
+					title: req.body.title,
+					description: req.body.description,
+					status: req.body.status,
+					deadline: req.body.deadline,
+				},
+				{ new: true }
+			);
+			res
+				.status(200)
+				.json({ message: 'Task Updated Successfully', updatedTask });
 		} else {
-			return res
-				.status(402)
-				.json({ message: 'You are not authorized to update task' });
+			res
+				.status(404)
+				.json({ message: 'You are not authorized to update task  ' });
 		}
 	} catch (err) {
 		res
@@ -79,32 +83,34 @@ const updateTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const founded = await userModel.findById({ _id: id });
-		if (
-			founded &&
-			founded.deleted == false &&
-			founded.isVerified == true &&
-			founded.role == 'admin'
-		) {
-			const { id } = req.body;
-			let deleted = await taskModel.findById({ _id: id });
-			if (deleted) {
-				let deletedTask = await taskModel.findByIdAndDelete({ _id: id });
-				return res.status(201).json({ message: 'Task Deleted', deletedTask });
-			} else {
-				return res.status(400).json({ message: 'Task not exist' });
-			}
-		} else {
-			return res.status(402).json({ message: 'You dont have a premession' });
-		}
-	} catch {
-		(err) =>
+		let user = req.user.id;
+		let role = req.user.role;
+		let taskID = req.params.id;
+
+		role !== 'admin' &&
+			res.status(403).json({ message: "You don't have permission " });
+		let taskAutherized = await taskModel.findOne({
+			_id: taskID,
+			userId: user,
+		});
+		// console.log(taskAutherized);
+
+		if (taskAutherized) {
+			let deletedTask = await taskModel.findByIdAndDelete(taskID);
+			// console.log(deletedTask);
 			res
-				.status(404)
-				.json({ error: 'Something went wrong while updating the task', err });
+				.status(200)
+				.json({ message: 'Task deleted successfully.', deletedTask });
+		} else {
+			res.json({ message: 'You are not authorized to Delete task ' });
+		}
+	} catch (err) {
+		res
+			.status(500)
+			.json({ message: 'Error occuring while deleting task', err });
 	}
 };
+
 const getAllTasksWithUserData = async (req, res) => {
 	try {
 		// user = await userModel.findById(userId);
