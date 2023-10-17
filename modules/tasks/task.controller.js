@@ -32,9 +32,7 @@ const addTask = async (req, res) => {
 				deadline,
 				status: 'todo',
 			});
-			return res
-				.status(200)
-				.json({ message: `Task Added to ${assigningTo.userName}`, addTask });
+			return res.status(200).json({ message: `Task Added `, addTask });
 		}
 	} catch (err) {
 		res.status(500).json({ message: 'Error occuring while Adding task', err });

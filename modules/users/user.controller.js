@@ -62,45 +62,6 @@ const verifyEmail = async (req, res) => {
 	}
 };
 
-// const signUpWithGoogle = async (req, res) => {
-// 	try {
-// 		// Assuming you are using Passport's GoogleStrategy
-// 		const { id, displayName, emails } = req.user; // Data from Google authentication
-
-// 		// Check if the user exists in your database based on their Google ID
-// 		const existingUser = await userModel.findOne({ googleId: id });
-
-// 		if (existingUser) {
-// 			// User exists, you can return a response or token
-// 			// For example, generate a JWT token and return it
-// 			const token = generateJwtToken(existingUser);
-
-// 			return res
-// 				.status(200)
-// 				.json({ message: 'User signed in with Google', token });
-// 		} else {
-// 			// User does not exist, create a new user based on the Google profile information
-// 			const newUser = await userModel.create({
-// 				googleId: id,
-// 				email: emails[0].value, // Use the first email from the Google response
-// 				// Add other user fields you want to populate
-// 			});
-
-// 			// Generate a JWT token for the new user
-// 			const token = generateJwtToken(newUser);
-// 			console.log(token, 'token generated in signupgoogle');
-
-// 			return res
-// 				.status(201)
-// 				.json({ message: 'User signed up with Google', token });
-// 		}
-// 	} catch (error) {
-// 		return res
-// 			.status(500)
-// 			.json({ message: 'Error handling Google signup', error });
-// 	}
-// };
-
 const signIn = async (req, res) => {
 	let email = req.body.email;
 
@@ -118,7 +79,7 @@ const signIn = async (req, res) => {
 			// res.setHeader('Authorization', 'Bearer ' + token);
 
 			res.status(200).json({
-				message: `Successfully signed in, Welcome back ${foundUser.userName} 🙋🏻`,
+				message: `Successfully signed in, Welcome back`,
 				token,
 			});
 		}
@@ -129,7 +90,7 @@ const getAllUsers = async (req, res) => {
 	try {
 		let allUser = await userModel.find();
 
-		res.status(200).json({ message: 'Welcome 🙋🏻, All user: ', allUser });
+		res.status(200).json({ message: 'Welcome , All user: ', allUser });
 	} catch (err) {
 		res.status(400).json({ message: 'Error', err });
 	}
@@ -146,7 +107,7 @@ const changePassword = async (req, res) => {
 			let hashedNewPassword = bcrypt.hashSync(req.body.newPassword, 10);
 			user.password = hashedNewPassword;
 			await user.save();
-			res.json({ message: 'Password updated successfully 👌😃' });
+			res.json({ message: 'Password updated successfully' });
 		}
 	} catch (err) {
 		res
@@ -170,7 +131,7 @@ const updateUser = async (req, res) => {
 		!updatedUser && res.status(404).json({ message: 'User not found' });
 		res
 			.status(200)
-			.json({ message: 'User Updated Successfully  👌😃', updatedUser });
+			.json({ message: 'User Updated Successfully ', updatedUser });
 	} catch (err) {
 		res
 			.status(500)
@@ -217,7 +178,7 @@ const logout = async (req, res) => {
 	try {
 		if (founded && founded.deleted == false) {
 			res.removeHeader('token');
-			return res.json({ message: 'successfully Logout ☹️👋🏼👋🏼' });
+			return res.json({ message: 'successfully Logout' });
 		} else {
 			return res.status(400).json({ message: 'User not exist' });
 		}
