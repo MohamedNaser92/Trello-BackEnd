@@ -71,10 +71,16 @@ userRoutes.delete('/user/deleteUser/:id', authUser, deleteUser);
 userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
 
+// userRoutes.get(
+// 	'/auth/google',
+// 	passport.authenticate('google', {
+// 		scope: ['https://www.googleapis.com/auth/plus.login', 'email'],
+// 	})
+// );
 userRoutes.get(
 	'/auth/google',
 	passport.authenticate('google', {
-		scope: ['https://www.googleapis.com/auth/plus.login', 'email'],
+		scope: ['email', 'profile'],
 	})
 );
 
