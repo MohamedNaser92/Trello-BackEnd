@@ -7,8 +7,8 @@ config();
 
 const callbackURL =
 	process.env.NODE_ENV === 'production'
-		? 'https://trello-application.onrender.com/auth/google/callback'
-		: 'http://localhost:3000/auth/google/callback';
+		? process.env.PROD_URL + '/auth/google/callback'
+		: process.env.BASE_URL + '/auth/google/callback';
 
 passport.use(
 	new GoogleStrategy(
@@ -30,7 +30,7 @@ passport.use(
 				const existingUser = await userModel.findOne({ email });
 
 				if (existingUser) {
-					console.log('user is: ', existingUser);
+					// console.log('user is: ', existingUser);
 					return done(null, existingUser);
 				} else {
 					const newUser = await userModel.create({

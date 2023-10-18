@@ -74,9 +74,10 @@ const signIn = async (req, res) => {
 		let matched = bcrypt.compareSync(req.body.password, foundUser.password);
 		!matched && res.status(401).json({ message: 'Wrong password ' });
 		if (matched) {
-			let token = jwt.sign({ id: foundUser.id }, 'signInToken');
-			// res.header('Authorization', 'Bearer ' + token);
-			// res.setHeader('Authorization', 'Bearer ' + token);
+			let token = jwt.sign(
+				{ id: foundUser.id, role: foundUser.role },
+				'signInToken'
+			);
 
 			res.status(200).json({
 				message: `Successfully signed in, Welcome back`,
