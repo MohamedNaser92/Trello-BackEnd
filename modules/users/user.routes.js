@@ -71,12 +71,6 @@ userRoutes.delete('/user/deleteUser/:id', authUser, deleteUser);
 userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
 
-// userRoutes.get(
-// 	'/auth/google',
-// 	passport.authenticate('google', {
-// 		scope: ['https://www.googleapis.com/auth/plus.login', 'email'],
-// 	})
-// );
 userRoutes.get(
 	'/auth/google',
 	passport.authenticate('google', {
@@ -91,13 +85,20 @@ userRoutes.get(
 	}),
 	(req, res) => {
 		const token = jwt.sign(req.user.id, 'signInToken');
-		const baseUrl =
-			process.env.NODE_ENV === 'production'
-				? process.env.PROD_URL
-				: process.env.BASE_URL;
-		res.redirect(baseUrl + '/google-callback?token=' + token);
+		// const baseUrl =
+		// 	process.env.NODE_ENV === 'production'
+		// 		? process.env.PROD_URL
+		// 		: process.env.BASE_URL;
+		// res.redirect(baseUrl + '/google-callback?token=' + token);
+
+		res.redirect(
+			'https://trello-application.onrender.com' +
+				'/google-callback?token=' +
+				token
+		);
 	}
 );
+
 export default userRoutes;
 // userRoutes.get(
 // 	'/auth/google/callback',
@@ -110,4 +111,10 @@ export default userRoutes;
 // 		// Return the token to the client
 // 		res.json({ message: 'Google sign-in successful', token });
 // 	}
+// );
+// userRoutes.get(
+// 	'/auth/google',
+// 	passport.authenticate('google', {
+// 		scope: ['https://www.googleapis.com/auth/plus.login', 'email'],
+// 	})
 // );
