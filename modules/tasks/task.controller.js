@@ -19,7 +19,7 @@ const addTask = async (req, res) => {
 
 		if (!assigningTo)
 			return res.status(400).json({
-				message: 'User you trying to addmit task to is exist',
+				message: 'User you trying to addmit task to is not exist',
 			});
 
 		if (assigningTo) {
@@ -111,34 +111,74 @@ const deleteTask = async (req, res) => {
 
 const getAllTasksWithUserData = async (req, res) => {
 	try {
-		// user = await userModel.findById(userId);
+		const userId = req.user.id;
+		const user = await userModel.findById(userId);
+		console.log(user);
+		let tasksQuery = taskModel.find();
 
-		let getAllTasksWithUsersData = await taskModel
-			.find()
-			.populate('userId', 'userName email role');
-		console.log(getAllTasksWithUsersData);
-		res.status(200).json({ message: 'All tasks', getAllTasksWithUsersData });
+		if (user.role === 'admin') {
+			tasksQuery = tasksQuery.populate('userId', 'userName email role');
+		} else {
+			tasksQuery = tasksQuery
+				.where('assignTo')
+				.equals(userId)
+				.populate('userId', 'userName email role');
+		}
+
+		const getAllTasksWithUsersData = await tasksQuery.exec();
+
+		res.status(200).json({
+			message: 'Tasks retrieved successfully',
+			tasks: getAllTasksWithUsersData,
+		});
 	} catch (err) {
-		res.status(500).json({ message: 'Error while getting tasks', err });
+		res.status(500).json({ message: 'Error while getting tasks', error: err });
 	}
 };
+
 //
 
+// const getallTasksNotDoneAfterDeadline = async (req, res) => {
+// 	let user = req.user.id;
+// 	let role = req.user.role;
+
+// 	try {
+// 		role !== 'admin' &&
+// 			res.status(403).json({ message: "You don't have permission " });
+// 		let query = req.user.role === 'admin' ? {} : { user };
+// 		console.log(query);
+// 		let tasksDelayed = await taskModel.find({
+// 			...query,
+// 			status: { $ne: 'done' },
+// 			deadline: { $lt: new Date() },
+// 		});
+// 		res.status(200).json({ message: 'Delayed tasks:', tasksDelayed });
+// 	} catch (err) {
+// 		res.status(500).json({ message: 'Error while getting tasks' });
+// 	}
+// };
 const getallTasksNotDoneAfterDeadline = async (req, res) => {
 	let user = req.user.id;
 	let role = req.user.role;
 
 	try {
-		role !== 'admin' &&
-			res.status(403).json({ message: "You don't have permission " });
-		let query = req.user.role === 'admin' ? {} : { user };
-		console.log(query);
-		let tasksDelayed = await taskModel.find({
-			...query,
-			status: { $ne: 'done' },
-			deadline: { $lt: new Date() },
-		});
-		res.status(200).json({ message: 'Delayed tasks:', tasksDelayed });
+		if (role === 'admin') {
+			// If the user is an admin, retrieve all delayed tasks
+			let tasksDelayed = await taskModel.find({
+				status: { $ne: 'done' },
+				deadline: { $lt: new Date() },
+			});
+			res.status(200).json({ message: 'Delayed tasks:', tasksDelayed });
+		} else {
+			// If the user is not an admin, retrieve only their delayed tasks
+			console.log(new Date());
+			let tasksDelayed = await taskModel.find({
+				assignTo: user,
+				status: { $ne: 'done' },
+				deadline: { $lt: new Date() },
+			});
+			res.status(200).json({ message: 'Your delayed tasks:', tasksDelayed });
+		}
 	} catch (err) {
 		res.status(500).json({ message: 'Error while getting tasks' });
 	}

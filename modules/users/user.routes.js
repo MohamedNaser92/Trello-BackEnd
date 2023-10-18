@@ -78,18 +78,6 @@ userRoutes.get(
 	})
 );
 
-// userRoutes.get(
-// 	'/auth/google/callback',
-// 	passport.authenticate('google', {
-// 		failureRedirect: '/failure', // Redirect to the login route on authentication failure
-// 	}),
-// 	(req, res) => {
-// 		// You can create a JWT token here based on the authenticated user
-// 		const token = jwt.sign(req.user.id, 'signInToken'); // Assuming you have a function to generate the JWT token
-// 		// Return the token to the client
-// 		res.json({ message: 'Google sign-in successful', token });
-// 	}
-// );
 userRoutes.get(
 	'/auth/google/callback',
 	passport.authenticate('google', {
@@ -105,3 +93,15 @@ userRoutes.get(
 	}
 );
 export default userRoutes;
+// userRoutes.get(
+// 	'/auth/google/callback',
+// 	passport.authenticate('google', {
+// 		failureRedirect: '/failure', // Redirect to the login route on authentication failure
+// 	}),
+// 	(req, res) => {
+// 		// You can create a JWT token here based on the authenticated user
+// 		const token = jwt.sign(req.user.id, 'signInToken'); // Assuming you have a function to generate the JWT token
+// 		// Return the token to the client
+// 		res.json({ message: 'Google sign-in successful', token });
+// 	}
+// );
