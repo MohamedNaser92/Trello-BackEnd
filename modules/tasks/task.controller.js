@@ -120,14 +120,12 @@ const getAllTasksWithUserData = async (req, res) => {
 			tasksQuery = tasksQuery
 				.where('userId')
 				.equals(userId)
-				.populate('userId', 'userName email role');
+				.populate('assignTo', 'userName email role');
 		} else {
 			tasksQuery = tasksQuery.where('assignTo').equals(userId).populate({
 				path: 'assignTo',
 				select: 'userName email role',
 			});
-
-			console.log(tasksQuery);
 		}
 
 		const getAllTasksWithUsersData = await tasksQuery.exec();
