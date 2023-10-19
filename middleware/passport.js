@@ -6,11 +6,9 @@ import userModel from '../DB/models/user.model.js';
 config();
 
 const callbackURL =
-	'https://trello-application.onrender.com/auth/google/callback';
-// const callbackURL =
-// 	process.env.NODE_ENV === 'production'
-// 		? process.env.PROD_URL + '/auth/google/callback'
-// 		: process.env.BASE_URL + '/auth/google/callback';
+	process.env.NODE_ENV === 'production'
+		? process.env.PROD_URL + '/auth/google/callback'
+		: process.env.BASE_URL + '/auth/google/callback';
 
 passport.use(
 	new GoogleStrategy(

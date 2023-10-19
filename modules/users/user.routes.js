@@ -74,7 +74,7 @@ userRoutes.post('/logout/:id', authUser, logout);
 userRoutes.get(
 	'/auth/google',
 	passport.authenticate('google', {
-		scope: ['email', 'profile'],
+		scope: ['https://www.googleapis.com/auth/plus.login', 'profile'],
 	})
 );
 
@@ -85,17 +85,11 @@ userRoutes.get(
 	}),
 	(req, res) => {
 		const token = jwt.sign(req.user.id, 'signInToken');
-		// const baseUrl =
-		// 	process.env.NODE_ENV === 'production'
-		// 		? process.env.PROD_URL
-		// 		: process.env.BASE_URL;
-		// res.redirect(baseUrl + '/google-callback?token=' + token);
-
-		res.redirect(
-			'https://trello-application.onrender.com' +
-				'/google-callback?token=' +
-				token
-		);
+		const baseUrl =
+			process.env.NODE_ENV === 'production'
+				? process.env.PROD_URL
+				: process.env.BASE_URL;
+		res.redirect(baseUrl + '/google-callback?token=' + token);
 	}
 );
 

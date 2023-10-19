@@ -113,16 +113,21 @@ const getAllTasksWithUserData = async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const user = await userModel.findById(userId);
-		console.log(user);
 		let tasksQuery = taskModel.find();
 
 		if (user.role === 'admin') {
-			tasksQuery = tasksQuery.populate('userId', 'userName email role');
-		} else {
+			// tasksQuery = tasksQuery.populate('userId', 'userName email role');
 			tasksQuery = tasksQuery
-				.where('assignTo')
+				.where('userId')
 				.equals(userId)
 				.populate('userId', 'userName email role');
+		} else {
+			tasksQuery = tasksQuery.where('assignTo').equals(userId).populate({
+				path: 'assignTo',
+				select: 'userName email role',
+			});
+
+			console.log(tasksQuery);
 		}
 
 		const getAllTasksWithUsersData = await tasksQuery.exec();
@@ -138,40 +143,19 @@ const getAllTasksWithUserData = async (req, res) => {
 
 //
 
-// const getallTasksNotDoneAfterDeadline = async (req, res) => {
-// 	let user = req.user.id;
-// 	let role = req.user.role;
-
-// 	try {
-// 		role !== 'admin' &&
-// 			res.status(403).json({ message: "You don't have permission " });
-// 		let query = req.user.role === 'admin' ? {} : { user };
-// 		console.log(query);
-// 		let tasksDelayed = await taskModel.find({
-// 			...query,
-// 			status: { $ne: 'done' },
-// 			deadline: { $lt: new Date() },
-// 		});
-// 		res.status(200).json({ message: 'Delayed tasks:', tasksDelayed });
-// 	} catch (err) {
-// 		res.status(500).json({ message: 'Error while getting tasks' });
-// 	}
-// };
 const getallTasksNotDoneAfterDeadline = async (req, res) => {
 	let user = req.user.id;
 	let role = req.user.role;
 
 	try {
 		if (role === 'admin') {
-			// If the user is an admin, retrieve all delayed tasks
 			let tasksDelayed = await taskModel.find({
+				userId: user,
 				status: { $ne: 'done' },
 				deadline: { $lt: new Date() },
 			});
 			res.status(200).json({ message: 'Delayed tasks:', tasksDelayed });
 		} else {
-			// If the user is not an admin, retrieve only their delayed tasks
-			console.log(new Date());
 			let tasksDelayed = await taskModel.find({
 				assignTo: user,
 				status: { $ne: 'done' },
