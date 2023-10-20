@@ -74,9 +74,15 @@ userRoutes.post('/logout/:id', authUser, logout);
 userRoutes.get(
 	'/auth/google',
 	passport.authenticate('google', {
-		scope: ['https://www.googleapis.com/auth/plus.login', 'profile'],
+		scope: ['openid', 'profile', 'email'],
 	})
 );
+// userRoutes.get(
+// 	'/auth/google',
+// 	passport.authenticate('google', {
+// 		scope: ['https://www.googleapis.com/auth/plus.login', 'profile'],
+// 	})
+// );
 
 userRoutes.get(
 	'/auth/google/callback',
