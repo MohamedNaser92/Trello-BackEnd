@@ -74,7 +74,7 @@ userRoutes.post('/logout/:id', authUser, logout);
 userRoutes.get(
 	'/google',
 	passport.authenticate('google', {
-		scope: ['profile', 'email'],
+		scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email'],
 	})
 );
 // userRoutes.get(
