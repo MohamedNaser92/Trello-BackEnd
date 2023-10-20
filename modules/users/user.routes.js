@@ -72,9 +72,9 @@ userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
 
 userRoutes.get(
-	'/auth/google',
+	'/google',
 	passport.authenticate('google', {
-		scope: ['openid', 'profile', 'email'],
+		scope: ['profile', 'email'],
 	})
 );
 // userRoutes.get(
@@ -85,7 +85,7 @@ userRoutes.get(
 // );
 
 userRoutes.get(
-	'/auth/google/callback',
+	'/google/callback',
 	passport.authenticate('google', {
 		failureRedirect: '/failure', // Redirect to the login route on authentication failure
 	}),

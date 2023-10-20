@@ -16,6 +16,7 @@ passport.use(
 			clientID: process.env.CLIENT_ID,
 			clientSecret: process.env.CLIENT_SECRET,
 			callbackURL,
+			scope: ['profile', 'email'],
 		},
 		async (accessToken, refreshToken, profile, done) => {
 			try {
@@ -30,7 +31,7 @@ passport.use(
 				const existingUser = await userModel.findOne({ email });
 
 				if (existingUser) {
-					console.log('user is: ', existingUser);
+					// console.log('user is: ', existingUser);
 					return done(null, existingUser);
 				} else {
 					const newUser = await userModel.create({
