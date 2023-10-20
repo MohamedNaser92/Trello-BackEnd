@@ -9,7 +9,13 @@ const app = express();
 app.use(express.json());
 
 connection();
-app.use(cors({ origin: '*' }));
+app.use(
+	cors({
+		origin: '*',
+		methods: 'GET,POST,PUT,DELETE,OPTIONS',
+		credentials: true,
+	})
+);
 
 app.use(userRoutes);
 app.use(taskRoutes);
