@@ -5,28 +5,35 @@ const authUser = async (req, res, next) => {
 	let { token } = req.headers;
 	let id = req.params.id;
 	try {
-		!token && res.status(401).json({ message: 'Please provide a token' });
+		if (!token) {
+			return res.status(401).json({ message: 'Please provide a token' });
+		}
 
 		let decoded = jwt.verify(token, 'signInToken');
-		!decoded && res.status(401).json({ message: 'invalid token' });
+		if (!decoded) {
+			return res.status(401).json({ message: 'invalid token' });
+		}
 
 		if (id !== decoded.id) {
-			res.json({ message: 'You are not authorized to update user' });
-		} else {
-			let user = await userModel.findById(decoded.id);
-			if (!user || !user.isVerified || user.deleted) {
-				res.status(401).json({
-					message:
-						'Authentication failed, User not found, or deleted Temporarily, or not verified.',
-				});
-			} else {
-				next();
-			}
+			return res
+				.status(403)
+				.json({ message: 'You are not authorized to update this user' });
 		}
+
+		let user = await userModel.findById(decoded.id);
+		if (!user || !user.isVerified || user.deleted) {
+			return res.status(401).json({
+				message:
+					'Authentication failed, User not found, or deleted Temporarily, or not verified.',
+			});
+		}
+
+		next();
 	} catch (err) {
-		res.status(500).json({ message: 'Error in Authentication', err });
+		return res.status(500).json({ message: 'Error in Authentication', err });
 	}
 };
+
 const auth = async (req, res, next) => {
 	let { token } = req.headers;
 	try {
