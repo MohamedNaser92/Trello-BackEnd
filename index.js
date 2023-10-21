@@ -12,7 +12,7 @@ connection();
 app.use(
 	cors({
 		origin: '*',
-		methods: 'GET,POST,PUT,DELETE,PATCH,OPTIONS',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 	})
 );

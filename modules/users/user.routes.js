@@ -77,12 +77,6 @@ userRoutes.get(
 		scope: ['profile'],
 	})
 );
-// userRoutes.get(
-// 	'/auth/google',
-// 	passport.authenticate('google', {
-// 		scope: ['https://www.googleapis.com/auth/plus.login', 'profile'],
-// 	})
-// );
 
 userRoutes.get(
 	'/google/callback',

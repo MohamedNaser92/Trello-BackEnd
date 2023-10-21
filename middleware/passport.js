@@ -20,6 +20,8 @@ passport.use(
 		},
 		async (accessToken, refreshToken, profile, done) => {
 			try {
+				console.log('Google profile data:', profile);
+
 				if (!profile.emails || profile.emails.length === 0) {
 					return done(null, false, {
 						message: 'No email found in Google profile.',
