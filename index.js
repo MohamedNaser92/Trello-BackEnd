@@ -9,6 +9,8 @@ const app = express();
 app.use(express.json());
 
 connection();
+
+app.options('*', cors());
 app.use(
 	cors({
 		origin: '*',
