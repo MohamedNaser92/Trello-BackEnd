@@ -222,7 +222,9 @@ const continueWithGoogle = async (req, res) => {
 			);
 			// Send the token to the user's email, you need to implement this part
 
-			res.status(201).json({ message: 'Successfully signed up', newUser });
+			res
+				.status(201)
+				.json({ message: 'Successfully signed up', newUser, token });
 		} else {
 			// User already exists, you can sign them in here or handle it as needed
 			const token = jwt.sign(
