@@ -211,8 +211,7 @@ const continueWithGoogle = async (req, res) => {
 			// User doesn't exist, create a new user account
 			const newUser = await userModel.create({
 				email,
-				userName: name,
-				googleId: profile.id,
+				userName: email,
 				isVerified: true,
 			});
 
