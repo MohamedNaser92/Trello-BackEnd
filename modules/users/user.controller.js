@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import userModel from '../../DB/models/user.model.js';
 import { sendToEmail } from '../../utils/sendEmail.js';
+import { OAuth2Client } from 'google-auth-library';
 
 const signUp = async (req, res) => {
 	try {
@@ -187,6 +188,55 @@ const logout = async (req, res) => {
 		next(err);
 	}
 };
+const continueWithGoogle = async (req, res) => {
+	try {
+		const { credintial } = req.body;
+		const client = new OAuth2Client(process.env.CLIENT_ID);
+
+		async function verify() {
+			const ticket = await client.verifyIdToken({
+				idToken: credintial,
+				audience: process.env.CLIENT_ID,
+			});
+			const payload = ticket.getPayload();
+			return payload;
+		}
+
+		const { email_verified, email, name } = await verify();
+
+		// Check if the user with the provided email exists in your database
+		const existingUser = await userModel.findOne({ email });
+
+		if (!existingUser) {
+			// User doesn't exist, create a new user account
+			const newUser = await userModel.create({
+				email,
+				name,
+				// other properties you want to save
+			});
+
+			// Generate a token for sign-up or sign-in, and send it to the user
+			const verificationSignUpToken = jwt.sign(
+				{ id: newUser.id },
+				'signUpToken'
+			);
+			// Send the token to the user's email, you need to implement this part
+
+			res.status(201).json({ message: 'Successfully signed up', newUser });
+		} else {
+			// User already exists, you can sign them in here or handle it as needed
+			const token = jwt.sign(
+				{ id: existingUser.id, role: existingUser.role },
+				'signInToken'
+			);
+			res
+				.status(200)
+				.json({ message: 'Successfully signed in, Welcome back', token });
+		}
+	} catch (err) {
+		res.status(500).json({ message: 'Error in Google sign-in' });
+	}
+};
 
 export {
 	signUp,
@@ -198,4 +248,5 @@ export {
 	deleteUser,
 	softDeleteUser,
 	logout,
+	continueWithGoogle,
 };
