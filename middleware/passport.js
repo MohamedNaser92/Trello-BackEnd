@@ -7,8 +7,8 @@ config();
 
 const callbackURL =
 	process.env.NODE_ENV === 'production'
-		? process.env.PROD_URL + '/google/callback'
-		: process.env.BASE_URL + '/google/callback';
+		? process.env.PROD_URL + '/google'
+		: process.env.BASE_URL + '/google';
 
 passport.use(
 	new GoogleStrategy(

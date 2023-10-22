@@ -71,15 +71,15 @@ userRoutes.delete('/user/deleteUser/:id', authUser, deleteUser);
 userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
 
-userRoutes.get(
-	'/google',
-	passport.authenticate('google', {
-		scope: ['profile'],
-	})
-);
+// userRoutes.get(
+// 	'/google',
+// 	passport.authenticate('google', {
+// 		scope: ['profile'],
+// 	})
+// );
 
 userRoutes.get(
-	'/google/callback',
+	'/google',
 	passport.authenticate('google', {
 		failureRedirect: '/failure', // Redirect to the login route on authentication failure
 	}),
