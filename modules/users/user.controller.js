@@ -211,13 +211,14 @@ const continueWithGoogle = async (req, res) => {
 			// User doesn't exist, create a new user account
 			const newUser = await userModel.create({
 				email,
-				name,
-				// other properties you want to save
+				userName: name,
+				googleId: profile.id,
+				isVerified: true,
 			});
 
 			// Generate a token for sign-up or sign-in, and send it to the user
-			const verificationSignUpToken = jwt.sign(
-				{ id: newUser.id },
+			const token = jwt.sign(
+				{ id: newUser.id, role: newUser.role },
 				'signUpToken'
 			);
 			// Send the token to the user's email, you need to implement this part
