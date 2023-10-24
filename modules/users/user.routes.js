@@ -1,6 +1,5 @@
 import express from 'express';
 import session from 'express-session';
-import jwt from 'jsonwebtoken';
 
 import {
 	signUp,
@@ -26,7 +25,6 @@ import {
 	auth,
 	authVerificationSignUp,
 } from '../../middleware/authentication.js';
-import passport from '../../middleware/passport.js';
 import { config } from 'dotenv';
 config();
 const userRoutes = express.Router();
@@ -38,9 +36,6 @@ userRoutes.use(
 		saveUninitialized: true,
 	})
 );
-
-userRoutes.use(passport.initialize());
-userRoutes.use(passport.session());
 
 userRoutes.post('/signup', validation(signUpValidationScema), signUp);
 
@@ -71,28 +66,7 @@ userRoutes.delete('/user/deleteUser/:id', authUser, deleteUser);
 
 userRoutes.put('/user/softDeleteUser/:id', authUser, softDeleteUser);
 userRoutes.post('/logout/:id', authUser, logout);
+
 userRoutes.post('/continugoogle', continueWithGoogle);
-
-// userRoutes.get(
-// 	'/google',
-// 	passport.authenticate('google', {
-// 		scope: ['profile'],
-// 	})
-// );
-
-// userRoutes.get(
-// 	'/google',
-// 	passport.authenticate('google', {
-// 		failureRedirect: '/failure', // Redirect to the login route on authentication failure
-// 	}),
-// 	(req, res) => {
-// 		const token = jwt.sign(req.user.id, 'signInToken');
-// 		const baseUrl =
-// 			process.env.NODE_ENV === 'production'
-// 				? process.env.PROD_URL
-// 				: process.env.BASE_URL;
-// 		res.redirect(baseUrl + '/google-callback?token=' + token);
-// 	}
-// );
 
 export default userRoutes;

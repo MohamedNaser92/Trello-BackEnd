@@ -204,29 +204,24 @@ const continueWithGoogle = async (req, res) => {
 
 		const { email_verified, email, name } = await verify();
 
-		// Check if the user with the provided email exists in your database
 		const existingUser = await userModel.findOne({ email });
 
 		if (!existingUser) {
-			// User doesn't exist, create a new user account
 			const newUser = await userModel.create({
 				email,
 				userName: name,
 				isVerified: true,
 			});
 
-			// Generate a token for sign-up or sign-in, and send it to the user
 			const token = jwt.sign(
 				{ id: newUser.id, role: newUser.role },
 				'signUpToken'
 			);
-			// Send the token to the user's email, you need to implement this part
 
 			res
 				.status(201)
 				.json({ message: 'Successfully signed up', newUser, token });
 		} else {
-			// User already exists, you can sign them in here or handle it as needed
 			const token = jwt.sign(
 				{ id: existingUser.id, role: existingUser.role },
 				'signInToken'
